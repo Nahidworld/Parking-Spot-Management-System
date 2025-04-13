@@ -1,0 +1,18 @@
+1. Manager (Manager_id, phone_number, first_name,last_name, salary,address)
+2. employee (Employee_id, First_Name, Last_Name , hire_date, Salary, 
+   Phone_number,manager_id)
+3. parking_spot (Spot_id, Address, Manager_id)
+4. parking_slip (Parking_slip_id, Issue_date,Expair_date,Type,Customer_id,     Manager_id)
+5. parking_space (Space_id, Space_Type, Spot_id)
+6. rate (Rate_id, Hourly_rate, Day_Rate, Type)
+7. space_rate (Space_Rate_ID, Space_Id, Rate_id)
+8. fine (Fine_id, Issue_date, paid_date,Amount,Manager_id)
+9. Customer (Customer_id, First_name,Last_name,Email,Address,Phone_number,
+     license_plate_number,Fine_id)
+
+
+
+
+
+
+

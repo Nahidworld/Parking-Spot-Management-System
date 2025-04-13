@@ -1,0 +1,104 @@
+create table manager(
+       manager_id number(5) constraint manager_mid_pk primary key,
+       first_name varchar2(20) not null,
+       last_name varchar2(20),
+       phone_number number(11) unique not null,
+       salary number(10) not null,
+       manager_address varchar2(20) not null      
+) 
+
+desc manager
+drop table manager
+
+create table parking_spot(
+      spot_id number(5) constraint pspot_sid_pk primary key,
+      address varchar2(50) unique not null,
+      manager_id number(5)
+                 constraint paspot_mid_fk references manager(manager_id) not null
+)
+desc parking_spot
+drop table parking_spot
+
+create table parking_space(
+      space_id number(5) constraint pspace_spid_pk primary key,
+      space_type varchar2(20) 
+                 check( space_type in ('Small','Medium','Large')),
+      spot_id number(5) 
+              constraint pspace_sid_fk references parking_spot(spot_id) not null
+)
+desc parking_space
+drop table parking_space
+
+create table rate(
+       rate_id number(5) constraint rate_rid_pk primary key,
+       hourly_rate number(10) not null,
+       day_rate number(10) not null,
+       type varchar2(20) check(type in ('Small','Medium','Large'))
+)
+desc rate
+drop table rate
+
+create table space_rate(
+       space_rate_id number(5) constraint space_rate_srid_pk primary key,
+       space_id number(5)
+                constraint space_rate_spid_fk references parking_space(space_id),
+       rate_id number(5)
+                constraint space_rate_rid_fk references rate(rate_id)        
+)
+desc space_rate
+drop table space_rate
+
+create table employee(
+       employee_id number(5) constraint employee_emid_pk primary key,
+       first_name varchar2(20) not null,
+       last_name varchar2(20),
+       hire_date date not null,
+       salary number(10) not null,
+       phone_number number(11) unique not null,
+       manager_id number(5) 
+                  constraint employee_mid_fk references manager(manager_id) 
+)
+desc employee
+drop table employee
+
+create table fine(
+       fine_id number(5) constraint fine_fid_pk primary key,
+       issue_date date not null,
+       paid_date date not null,
+       amount number(10) not null,
+       manager_id number(5)
+                  constraint fine_mid_fk references manager(manager_id)     
+)
+desc fine 
+drop table fine
+
+create table customers(
+       customer_id number(5) constraint customer_cid_pk primary key,
+       first_name varchar2(20) not null,
+       last_name varchar2(20),
+       email varchar2(50),
+       address varchar2(20),
+       phone_number number(11) unique not null,
+       license_plate_number varchar2(20) unique not null,
+       find_id number(5) 
+               constraint customer_fid_fk references fine(fine_id)     
+)
+
+desc customers
+drop table customers
+
+create table parking_slip(
+       parking_slip_id number(5) constraint pkslip_psid_pk primary key,
+       issue_date date not null,
+       expair_date date not null,
+       customer_id number(5)
+                   constraint parkingslip_cid_fk references customers(customer_id) not null,
+       vehicle_type varchar2(30) 
+                             check(vehicle_type in ('small','medium','large')),
+       space_id number(5) 
+                 constraint parkingslip_spid_fk references parking_space(space_id) not null unique         
+)
+alter table parking_slip add(duration varchar2(30) not null)
+
+desc parking_slip
+drop table parking_slip

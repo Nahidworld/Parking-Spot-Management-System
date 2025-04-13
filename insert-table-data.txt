@@ -1,0 +1,306 @@
+create table manager(
+       manager_id number(5) constraint manager_mid_pk primary key,
+       first_name varchar2(20) not null,
+       last_name varchar2(20),
+       phone_number number(11) unique not null,
+       salary number(10) not null,
+       manager_address varchar2(20) not null      
+) 
+
+desc manager
+drop table manager
+
+create table parking_spot(
+      spot_id number(5) constraint pspot_sid_pk primary key,
+      address varchar2(50) unique not null,
+      manager_id number(5)
+                 constraint paspot_mid_fk references manager(manager_id) not null
+)
+desc parking_spot
+drop table parking_spot
+
+create table parking_space(
+      space_id number(5) constraint pspace_spid_pk primary key,
+      space_type varchar2(20) 
+                 check( space_type in ('Small','Medium','Large')),
+      spot_id number(5) 
+              constraint pspace_sid_fk references parking_spot(spot_id) not null
+)
+desc parking_space
+drop table parking_space
+
+create table rate(
+       rate_id number(5) constraint rate_rid_pk primary key,
+       hourly_rate number(10) not null,
+       day_rate number(10) not null,
+       type varchar2(20) check(type in ('Small','Medium','Large'))
+)
+desc rate
+drop table rate
+
+create table space_rate(
+       space_rate_id number(5) constraint space_rate_srid_pk primary key,
+       space_id number(5)
+                constraint space_rate_spid_fk references parking_space(space_id),
+       rate_id number(5)
+                constraint space_rate_rid_fk references rate(rate_id)        
+)
+desc space_rate
+drop table space_rate
+
+create table employee(
+       employee_id number(5) constraint employee_emid_pk primary key,
+       first_name varchar2(20) not null,
+       last_name varchar2(20),
+       hire_date date not null,
+       salary number(10) not null,
+       phone_number number(11) unique not null,
+       manager_id number(5) 
+                  constraint employee_mid_fk references manager(manager_id) 
+)
+desc employee
+drop table employee
+
+create table fine(
+       fine_id number(5) constraint fine_fid_pk primary key,
+       issue_date date not null,
+       paid_date date not null,
+       amount number(10) not null,
+       manager_id number(5)
+                  constraint fine_mid_fk references manager(manager_id)     
+)
+desc fine 
+drop table fine
+
+create table customers(
+       customer_id number(5) constraint customer_cid_pk primary key,
+       first_name varchar2(20) not null,
+       last_name varchar2(20),
+       email varchar2(50),
+       address varchar2(20),
+       phone_number number(11) unique not null,
+       license_plate_number varchar2(20) unique not null,
+       find_id number(5) 
+               constraint customer_fid_fk references fine(fine_id)     
+)
+
+desc customers
+drop table customers
+
+create table parking_slip(
+       parking_slip_id number(5) constraint pkslip_psid_pk primary key,
+       issue_date date not null,
+       expair_date date not null,
+       customer_id number(5)
+                   constraint parkingslip_cid_fk references customers(customer_id) not null,
+       vehicle_type varchar2(30) 
+                             check(vehicle_type in ('small','medium','large')),
+       space_id number(5) 
+                 constraint parkingslip_spid_fk references parking_space(space_id) not null unique         
+)
+alter table parking_slip add(duration varchar2(30) not null)
+
+desc parking_slip
+drop table parking_slip
+
+
+
+--------------------------------------------------
+--------------------------------------------------
+
+create sequence mgr_squ
+       increment by 1
+       start with 10
+       maxvalue 100
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Diana','Lorentz',5904235567,4200,'Bashundhara A block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'John','Chen',515124426,8200,'Bashundhara B block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Ismael','Sciarra' ,5151244369,7700,'Bashundhara C block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Jose','Manuel	Urman',5151244469,7800,'Bashundhara D block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Luis','Popp',5151244567,6900,'Bashundhara E block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Den','Raphaely',5151274561,11000,'Bashundhara F block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Alexander','Khoo',5151274562,3100,'Bashundhara G block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Shelli','Baida',5151274563,2900,'Bashundhara H block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Sigal','Tobias',5151274564,2800,'Bashundhara I block')
+insert into manager(manager_id,first_name,last_name,phone_number,salary,manager_address) values (mgr_squ.nextval,'Karen','Colmenares',5151274566,2500,'Bashundhara J block')
+
+select * from manager
+
+create sequence spot_squ
+       increment by 1
+       start with 1000
+       maxvalue 1050
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara A block Rd No 4',10)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara B block Rd No 2',11)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara C block Rd No 6',12)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara D block Rd No 7',13)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara E block Rd No 3',14)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara F block Rd No 10',15)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara G block Rd No 11',16)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara H block Rd No 8',17)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara I block Rd No 3',18)
+insert into parking_spot(spot_id,address,manager_id) values (spot_squ.nextval,'Bashundhara J block Rd No 6',19)
+
+select * from parking_spot
+
+create sequence space_seq
+       increment by 1
+       start with 1
+       maxvalue 200
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Small',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Small',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Small',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Small',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Small',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Small',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Large',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Large',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Large',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Medium',1000)
+insert into parking_space (space_id,space_type,spot_id) values(space_seq.nextval,'Large',1000)
+
+select * from parking_space
+delete from parking_space
+
+create sequence rate_seq
+       increment by 1
+       start with 1
+       maxvalue 200
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,100,700,'Small')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,170,1200,'Medium')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,250,2000,'Large')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,100,700,'Small')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,170,1200,'Medium')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,250,2000,'Large')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,100,700,'Small')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,170,1200,'Medium')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,250,2000,'Large')
+insert into rate(rate_id,hourly_rate,day_rate,type) values (rate_seq.nextval,100,700,'Small')
+
+select rate_id from rate
+delete from rate
+
+create sequence employee_seq
+       increment by 1
+       start with 200
+       maxvalue 300
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Timothy','Gates','17-JUN-21',5000, 625635100,12)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Randall','Perkins','17-JAN-21',5000, 625635101,12)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Sarah','Everett','15-MAR-21',6000, 625635102,12)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Britney','Everett','17-JUN-20',5000, 625635103,13)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Vance','Timothy','16-JAN-22',6000, 625635104,13)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Everett','McCain','19-FEB-22',8000, 625635105,13)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Jones','Samuel','27-JUN-21',5000, 625635106,14)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Alana','Walsh','07-APR-20',3000,625635107,14)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'McCainy','Feeney','14-FEB-20',9000, 625635109,15)
+insert into employee(employee_id,first_name,Last_name,hire_date,salary,phone_number,manager_id)values(employee_seq.nextval,'Kevin','Walsh','13-APR-20',8000, 625635100,15)
+
+select * from employee
+
+create sequence space_rate_seq
+       increment by 1
+       start with 200
+       maxvalue 300
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,1,1)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,2,1)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,3,1)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,4,1)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,5,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,6,1)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,7,1)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,8,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,9,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,10,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,11,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,12,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,13,3)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,14,3)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,15,3)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,16,2)
+insert into space_rate(space_rate_id,space_id,rate_id) values (space_rate_seq.nextval,17,3)
+
+select * from space_rate
+delect from space_rate
+
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (01,'08-dec-22','09-dec-22',70,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (02,'11-dec-22','12-dec-22',120,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (03,'08-dec-22','09-dec-22',200,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (04,'15-dec-22','16-dec-22',300,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (05,'08-dec-22','09-dec-22',250,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (06,'20-dec-22','22-dec-22',500,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (07,'10-dec-22','15-dec-22',1000,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (08,'08-dec-22','09-dec-22',100,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (09,'08-dec-22','09-dec-22',100,10)
+insert into fine (fine_id,issue_date,paid_date,amount,manager_id) values (10,'08-dec-22','09-dec-22',100,10)
+
+select * from fine
+
+
+create sequence customer_seq
+       increment by 1
+       start with 100
+       maxvalue 300
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Winston','Taylor','6505079876',
+'instonaylor@gmail.com','Bashundhara A block','KA 45-2422')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Jean','Fleaur','6505079877',
+'jeanfleaur@gmail.com','Bashundhara B block','KA 34-3243')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Martha','Sullivan','6505079878',
+'marthasullivan@gmail.com','Bashundhara A block','KHA 22-1123')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Girard','Geoni','6505079879',
+'girardgeoni@gmail.com','Bashundhara B block','KA 11-3432')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Nandita','Sarchand','6505091876',
+'nanditasarchand@gmail.com','Bashundhara A block','GA 22-1232')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Alexis','Bull','6505092876',
+'alexisbull@gmail.com','Bashundhara E block','KA 33-4332')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Julia','Dellinger','6505093876',
+'juliadellinger@gmail.com','Bashundhara F block','KA 65-4534')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Anthony','Cabrio','6505094876',
+'anthonycabrio@gmail.com','Bashundhara B block','KHA 25-4311')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Kelly','Chung','6505051876',
+'kellychung@gmail.com','Bashundhara E block','CA 25-2432')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Jennifer','Dilly','6505052876',
+'jenniferdilly@gmail.com','Bashundhara A block','KA 53-2423')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Timothy','Gates','6505053876',
+'timothygates@gmail.com','Bashundhara G block','KA 43-2422')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Randall','Perkins','6505054876',
+'randallperkins@gmail.com','Bashundhara G block','KA 62-1434')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Sarah','Bell','6505011876',
+'sarahbell@gmail.com','Bashundhara A block','KHA 51-5234')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Britney','Everett','6505012876',
+'britneyeverett@gmail.com','Bashundhara C block','KHA 53-6423')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Samuel','McCain','650.5013876',
+'samuelmcCain@gmail.com','Bashundhara A block','CA 12-3433')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Vance','Jones','6505014876',
+'vancejones@gmail.com','Bashundhara C block','GA 13-4122')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Alana','Walsh','6505079811',
+'alanawalsh@gmail.com','Bashundhara A block','GA 31-4334')
+insert into customers(customer_id,first_name,last_name,phone_number,email,address,license_plate_number) values(customer_seq.nextval,'Kevin','Feeney','6505079822',
+'kevinfeeney@gmail.com','Bashundhara B block','GA 22-4114')
+
+select * from customers
+
+create sequence parking_slip_seq
+       increment by 1
+       start with 1
+       maxvalue 500
+       nocache
+       nocycle
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'09-dec-22','09-dec-22','small',104,2,'2 hours')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'10-dec-22','10-dec-22','medium',105,5,'5 hours')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'10-dec-22','10-dec-22','small',106,1,'3 hours')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'09-dec-22','09-dec-22','small',107,3,'1 hours')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'11-dec-22','12-dec-22','large',108,13,'1 day')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'11-dec-22','12-dec-22','small',110,4,'1 day')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'09-dec-22','09-dec-22','large',111,14,'7 hours')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'15-dec-22','15-dec-22','large',112,15,'2 days')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'11-dec-22','13-dec-22','small',113,6,'2 days')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'11-dec-22','11-dec-22','medium',114,8,'1 days')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'12-dec-22','12-dec-22','medium',115,10,'3 hour')
+insert into parking_slip(parking_slip_id,issue_date,expair_date,vehicle_type,customer_id,space_id,duration) values(parking_slip_seq.nextval,'12-dec-22','12-dec-22','medium',116,9,'6 hour')
+
+select * from parking_slip

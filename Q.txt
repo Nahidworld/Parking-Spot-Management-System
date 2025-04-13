@@ -1,0 +1,17 @@
+equi join: 
+1. Find space type ,address ,manager id from parking spot according to spot id
+2. Display customer_id, First_name, Last_Name, phone number ,address of the customers who have parking_slip_id (from parking_slip and customer)
+3. Display those employees whose salary is higher than their managers (from employee, manager)
+4. Dispaly all employee and managers name 
+
+Non equi join: 
+1. Display 
+2. 
+
+outer Join:
+1. Display all the managers details who do/don't have emloyees under them
+2. Display customer name ,id and manager id from customer, fine
+
+self join:
+1. Display manager id,name employee id,name from employee only
+2.  
